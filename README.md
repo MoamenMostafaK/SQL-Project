@@ -1,57 +1,40 @@
-# 🚀 E-commerce Sales Analysis (SQL)
+# E-commerce SQL project
 
-## What this is
+This is a simple project using the Olist public e-commerce dataset downloaded from Kaggle.com
+I cleaned the CSV files, loaded the tables into SQLite, and wrote a few SQL queries to check revenue, categories, and customer behavior.
 
-This is a small SQL project I built to get back to basics and practice working with real data.
+## Files
 
-The goal was simple: take an e-commerce dataset and answer a few practical questions around revenue, customers, and product performance.
+- `etl.py` — load the data into `data/ecommerce.db`
+- `run_queries.py` — run the queries in `queries.sql`
+- `queries.sql` — the SQL analysis
+- `data/` — source CSV files and the database file
 
-## Dataset
+## Setup
 
-Brazilian E-commerce public dataset (Olist)
+- Install Python 3.10 or newer.
+- Install dependencies:
 
-Used mainly:
+  ```bash
+  pip install -r requirements.txt
+  ```
 
-- orders
-- order_items
-- customers
-- products
+## Run it
 
-## What I did
+```bash
+python etl.py
+python run_queries.py
+```
 
-## Data Pipeline ETL
+## What I looked at
 
-I used Python to build a simple ETL process:
+- total revenue and freight
+- revenue by month
+- category revenue share
+- top customers by spending
+- order value min/avg/max
+- customer order frequency
 
-Extracted raw CSV files using pandas
-Selected only relevant columns for analysis
-Loaded structured data into a SQLite database
+If you want, open `queries.sql` and run the queries directly.
 
-This allowed me to run SQL queries directly on a clean local database instead of raw files.
-
-## Quering the data to get basic insights
-
-Wrote a set of SQL queries to explore:
-
-- Total revenue
-- Revenue over time (monthly trend)
-- Top products by revenue
-- Top customers by spending
-- Average order value
-- Customer order frequency
-
-Nothing complex, just focusing on getting the fundamentals right: joins, group by, aggregations
-
-## Key takeaways
-
-- Revenue is not evenly distributed, a small number of products drive a big share
-- Same pattern with customers, a few high spenders stand out clearly
-- Breaking things down over time makes trends much easier to see
-
-## Tech used
-
-- SQL (SQLite)
-
-## Why I did this
-
-Coming from a different background, I'm focusing on building solid fundamentals through small, hands-on projects instead of just theory.
+## Screenshots are available in /screenshots

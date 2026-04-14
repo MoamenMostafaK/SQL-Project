@@ -1,44 +1,24 @@
 import pandas as pd
 import sqlite3
-import os
+from pathlib import Path
 
-
-base_path = os.path.dirname(__file__)
-db_path = os.path.join(base_path, 'olist_ecommerce.db')
-
-conn = sqlite3.connect(db_path)
-
-# 1. Define Schemas for the questions (Revenue, Top Products, Top Customers)
-schemas = {
-    'orders': {
-        'file': 'olist_orders_dataset.csv',
-        'cols': ['order_id', 'customer_id', 'order_purchase_timestamp', 'order_status']
-    },
-    'order_items': {
-        'file': 'olist_order_items_dataset.csv',
-        'cols': ['order_id', 'product_id', 'price', 'freight_value']
-    },
-    'customers': {
-        'file': 'olist_customers_dataset.csv',
-        'cols': ['customer_id', 'customer_unique_id'] # unique_id is key for "Frequent Customers"
-    },
-    'products': {
-        'file': 'olist_products_dataset.csv',
-        'cols': ['product_id', 'product_category_name']
-    }
+data_dir = Path(__file__).parent / 'data'
+db_path = data_dir / 'ecommerce.db'
+files = {
+    'orders': ('olist_orders_dataset.csv', ['order_id', 'customer_id', 'order_purchase_timestamp', 'order_status']),
+    'order_items': ('olist_order_items_dataset.csv', ['order_id', 'product_id', 'price', 'freight_value']),
+    'customers': ('olist_customers_dataset.csv', ['customer_id', 'customer_unique_id']),
+    'products': ('olist_products_dataset.csv', ['product_id', 'product_category_name']),
 }
 
-# 2. Import everything
-for table_name, info in schemas.items():
-    file_path = os.path.join(base_path, info['file'])
-    
-    if os.path.exists(file_path):
-        df = pd.read_csv(file_path, usecols=info['cols'])
-        # 'replace' handles the "delete if exists" requirement
-        df.to_sql(table_name, conn, if_exists='replace', index=False)
-        print(f"Table '{table_name}' updated successfully.")
-    else:
-        print(f"Warning: {info['file']} not found in {base_path}")
-
-print("\nDatabase is ready for analysis.")
+data_dir.mkdir(exist_ok=True)
+conn = sqlite3.connect(db_path)
+for table, (file_name, cols) in files.items():
+    path = data_dir / file_name
+    if not path.exists():
+        raise FileNotFoundError(f'{file_name} not found in data/')
+    df = pd.read_csv(path, usecols=cols)
+    df.to_sql(table, conn, if_exists='replace', index=False)
+    print('loaded', len(df), 'rows into', table)
 conn.close()
+print('database ready:', db_path)
